@@ -54,9 +54,11 @@ object JobRepo {
             emptyList<JobApplyModel>()
         }
     }
-    suspend fun getJob(): List<JobModel?> = withContext(Dispatchers.IO){
+    suspend fun getJob(
+        url: String
+    ): List<JobModel?> = withContext(Dispatchers.IO){
         try{
-            val url = URL("${BASE_URL}/jobs")
+            val url = URL("${url}")
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connect()
