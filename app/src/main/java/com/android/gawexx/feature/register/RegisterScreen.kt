@@ -11,9 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +29,7 @@ import com.android.gawexx.helper.Screen
 
 @Composable
 fun RegisterScreen(viewModel: RegisterViewModel){
+    var isSubmitted by remember { mutableStateOf(false) }
     //
     Column(
         modifier = Modifier.padding(vertical = 50.dp, horizontal = 20.dp).verticalScroll(
@@ -51,6 +57,13 @@ fun RegisterScreen(viewModel: RegisterViewModel){
             },
             modifier = Modifier.fillMaxWidth()
         )
+        if(isSubmitted && viewModel.fullName == ""){
+            Text(
+                "full name cannot be empty",
+                fontSize = 12.sp,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(15.dp))
         //
         Text(
@@ -66,6 +79,13 @@ fun RegisterScreen(viewModel: RegisterViewModel){
             },
             modifier = Modifier.fillMaxWidth()
         )
+        if(isSubmitted && viewModel.email == ""){
+            Text(
+                "email cannot be empty",
+                fontSize = 12.sp,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(15.dp))
         //
         Text(
@@ -81,6 +101,13 @@ fun RegisterScreen(viewModel: RegisterViewModel){
             },
             modifier = Modifier.fillMaxWidth()
         )
+        if(isSubmitted && viewModel.phoneNumber == ""){
+            Text(
+                "phone number cannot be empty",
+                fontSize = 12.sp,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(15.dp))
         //
         Text(
@@ -96,8 +123,14 @@ fun RegisterScreen(viewModel: RegisterViewModel){
             },
             modifier = Modifier.fillMaxWidth()
         )
+        if(isSubmitted && viewModel.password == ""){
+            Text(
+                "password cannot be empty",
+                fontSize = 12.sp,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(15.dp))
-        //
         Text(
             "Confirm Password",
             fontSize = 16.sp,
@@ -111,6 +144,13 @@ fun RegisterScreen(viewModel: RegisterViewModel){
             },
             modifier = Modifier.fillMaxWidth()
         )
+        if(isSubmitted && viewModel.confirmPassword == ""){
+            Text(
+                "confirm password cannot be empty",
+                fontSize = 12.sp,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(15.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -118,10 +158,27 @@ fun RegisterScreen(viewModel: RegisterViewModel){
         ){
             Button(
                 onClick = {
-                    //
+                    isSubmitted = true
+                    if(
+                        viewModel.fullName == "" ||
+                        viewModel.email == "" ||
+                        viewModel.phoneNumber == "" ||
+                        viewModel.password == "" ||
+                        viewModel.confirmPassword == ""
+                    ){
+                        return@Button
+                    }
+                    viewModel.register()
                 }
             ) {
-                Text("Register")
+                when(viewModel.loading){
+                    true -> {
+                        CircularProgressIndicator()
+                    }
+                    false -> {
+                        Text("Register")
+                    }
+                }
             }
         }
         Spacer(modifier = Modifier.height(25.dp))

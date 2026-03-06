@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
@@ -21,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -121,6 +123,16 @@ fun ProfileScreen(viewModel: ProfileViewModel){
                     fontSize = 16.sp,
                     color = Color.Black
                 )
+                val context = LocalContext.current
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        AppState.currentScreen.value = Screen.LOGIN
+                        AppState.saveLogin(context, false)
+                    }
+                ) {
+                    Text("Logout")
+                }
             }
         }
     }
