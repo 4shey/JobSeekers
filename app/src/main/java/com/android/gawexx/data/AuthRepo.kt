@@ -62,6 +62,7 @@ object AuthRepo {
                 put("phoneNumber", request.phoneNumber)
                 put("password", request.password)
                 put("confirmPassword", request.confirmPassword)
+                put("profilePicture", request.confirmPassword)
             }
 
             connection.outputStream.write(jsonBody.toString().toByteArray())

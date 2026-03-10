@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.gawexx.feature.explore.ExploreViewModel
 import com.android.gawexx.model.JobApplyModel
 import com.android.gawexx.model.JobModel
 import com.android.gawexx.ui.theme.GaweXXTheme
@@ -33,7 +34,8 @@ import com.android.gawexx.ui.theme.GaweXXTheme
 @Composable
 fun JobCard(
     job: JobModel?,
-    onClick: (Int) -> Unit
+    applyOnClick: (Int) -> Unit,
+    bookMarkOnClick: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -86,7 +88,7 @@ fun JobCard(
                 Button(
                     modifier = Modifier.weight(7f),
                     onClick = {
-
+                        job?.id?.let { applyOnClick(it) }
                     }
                 ) {
                     Text("Apply")
@@ -97,7 +99,7 @@ fun JobCard(
                     contentPadding = PaddingValues(6.dp),
                     modifier = Modifier.weight(1f),
                     onClick = {
-
+                        job?.id?.let { bookMarkOnClick(it) }
                     }
                 ) {
                     Icon(

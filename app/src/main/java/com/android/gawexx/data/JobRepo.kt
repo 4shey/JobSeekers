@@ -93,4 +93,29 @@ object JobRepo {
             emptyList<JobModel>()
         }
     }
+    suspend fun applyJob(id: Int): String? = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("${BASE_URL}/jobs/$id/apply")
+            val connection = url.openConnection() as HttpURLConnection
+
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Accept", "*/*")
+
+            val responseCode = connection.responseCode
+
+            val response = if (responseCode in 200..299) {
+                connection.inputStream.bufferedReader().readText()
+            } else {
+                connection.errorStream.bufferedReader().readText()
+            }
+
+            println(response)
+            val json = JSONObject(response)
+            json.getString("message")
+        } catch (e: Exception) {
+            println("failed...")
+            e.printStackTrace()
+            "Error Connection"
+        }
+    }
 }

@@ -23,6 +23,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.gawexx.componen.BottomBar
 import com.android.gawexx.componen.JobCard
+import com.android.gawexx.helper.AppState
 import com.android.gawexx.model.JobModel
 import com.android.gawexx.ui.theme.PurpleGrey80
 
@@ -46,9 +49,19 @@ fun ExploreScreen(viewModel: ExploreViewModel){
     LaunchedEffect(Unit) {
         viewModel.getJob()
     }
+
     val job = viewModel.job
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(viewModel.applyStatus) {
+        if (viewModel.applyStatus != "") {
+            snackbarHostState.showSnackbar(viewModel.applyStatus)
+            viewModel.applyStatus = ""
+        }
+    }
     //
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             Column (
                 modifier = Modifier
@@ -130,7 +143,7 @@ fun ExploreScreen(viewModel: ExploreViewModel){
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = Color.Black)
                 }
             }
             false -> {
@@ -147,7 +160,15 @@ fun ExploreScreen(viewModel: ExploreViewModel){
                             items(job) { jobs ->
                                 JobCard (
                                     job = jobs,
-                                    onClick = { println("click") }
+                                    applyOnClick = { id ->
+                                        viewModel.applyJob(id)
+                                    },
+                                    bookMarkOnClick = { id ->
+                                        val job = viewModel.job.find { it?.id == id }
+                                        job?.let {
+                                            AppState.favoriteJobs.value.add(it)
+                                        }
+                                    },
                                 )
                             }
                             item{

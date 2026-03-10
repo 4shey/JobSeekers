@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.gawexx.data.JobRepo
+import com.android.gawexx.helper.AppState
 import com.android.gawexx.helper.BASE_URL
 import com.android.gawexx.model.JobApplyModel
 import com.android.gawexx.model.JobModel
@@ -19,6 +20,7 @@ class ExploreViewModel: ViewModel() {
     var baseUrl by mutableStateOf("${BASE_URL}/jobs")
     var url by mutableStateOf(baseUrl)
     var loading by mutableStateOf(false)
+    var applyStatus by mutableStateOf("")
 
     fun getJob(){
         loading = true
@@ -42,5 +44,11 @@ class ExploreViewModel: ViewModel() {
             url = baseUrl
         }
         getJob()
+    }
+    fun applyJob(id: Int){
+        viewModelScope.launch {
+            val result = JobRepo.applyJob(id)
+            applyStatus = result ?: ""
+        }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.gawexx.componen.BottomBar
 import com.android.gawexx.componen.JobApplyCard
+import com.android.gawexx.componen.JobCard
+import com.android.gawexx.helper.AppState
 import com.android.gawexx.model.JobApplyModel
 
 @Composable
@@ -38,8 +41,12 @@ fun MyJobScreen(viewModel: MyJobViewModel){
     val jobApply = viewModel.jobApply
     val tabs = listOf("Saved Jobs", "Applications List")
     var selectedTabIndex by remember { mutableStateOf(0) }
+    val favoriteJobs = AppState.favoriteJobs.value
     //
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(AppState.snackbarHostState)
+        },
         topBar = {
             Column (
                 modifier = Modifier
@@ -70,9 +77,38 @@ fun MyJobScreen(viewModel: MyJobViewModel){
     ) { innerPadding ->
         when (selectedTabIndex){
             0 -> {
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp),
+                ) {
+                    if (jobApply == emptyList<JobApplyModel>()) {
+                        Text("Data not found")
+                    } else {
 
+                        LazyColumn() {
+
+                            items(favoriteJobs) { job ->
+
+                                JobCard(
+                                    job = job,
+                                    applyOnClick = { id ->
+                                        viewModel.applyJob(id)
+                                    },
+                                    bookMarkOnClick = { id ->
+                                        AppState.favoriteJobs.value.removeIf { it.id == id }
+                                    }
+                                )
+
+                            }
+
+                        }
+                    }
+                }
             }
             1 -> {
+                viewModel.getJobApply()
                 Column(
                     modifier = Modifier
                         .padding(innerPadding)

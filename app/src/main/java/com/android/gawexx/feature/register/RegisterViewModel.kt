@@ -44,6 +44,7 @@ class RegisterViewModel: ViewModel() {
                     phoneNumber = phoneNumber,
                     password = password,
                     confirmPassword = confirmPassword,
+                    profilePicture = "user.png"
                 )
             )
             loading = false

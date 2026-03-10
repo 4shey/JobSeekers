@@ -18,4 +18,5 @@ data class RegisterModel (
     val phoneNumber: String,
     val password: String,
     val confirmPassword: String,
+    val profilePicture: String,
 )
